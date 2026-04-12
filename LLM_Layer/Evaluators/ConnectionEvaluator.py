@@ -3,6 +3,7 @@ import json
 import logging
 from ..Prompts.connection_evaluator import CONNECTION_EVALUATOR_PROMPT
 from ..LLM.llm import LLM
+from utils.utils import clean_json
 
 logger = logging.getLogger("connection_evaluator")
 logger.setLevel(logging.INFO)
@@ -38,8 +39,14 @@ async def connection_evaluator(
     if isinstance(response, dict) and response.get("error"):
         return response
     logger.info("Received response from LLM.")
-    logger.debug(f"LLM response connection evaluator: {response.content}")
-    return response.content
+    logger.debug(f"LLM raw response: {response.content}")
+    try:
+        cleaned = clean_json(response.content)
+    except Exception as e:
+        logger.error(f"Error cleaning LLM response: {str(e)}")
+        return {"error": "invalid response from graph evaluator"}
+    logger.debug(f"LLM cleaned response: {cleaned}")
+    return cleaned
 
 
 def is_fully_connected(components, connections):
