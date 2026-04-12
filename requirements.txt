@@ -9,3 +9,7 @@ pyJWT
 pymongo
 dotenv
 itsdangerous
+redis
+fastembed
+PIL
+qdrant_client
