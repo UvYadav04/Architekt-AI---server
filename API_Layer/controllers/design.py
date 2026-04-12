@@ -4,12 +4,16 @@ import logging
 from db.Mongo import MongoDB
 import time
 from Workers.db_workers import save_design_qdrant
+from fastapi import status, HTTPException
 from utils.utils import clean_json
+from API_Layer.safeExecution import safeExecution
 
 logger = logging.getLogger("design_pipeline")
 logger.setLevel(logging.INFO)
+from fastapi.responses import StreamingResponse
 
 
+@safeExecution
 async def design_pipeline(
     user_id: str,
     session_id: str,
@@ -36,15 +40,16 @@ async def design_pipeline(
     async def run():
         logger.info(f"Starting agentPipeline.run with query='{query}', level='{level}'")
         response = await agentPipeline.run(query, stream_fn, level)
-        print(response)
+
         output = {}
         data = response["data"]
+
         if response["type"] != "error" and data is not None:
             graph = clean_json(data["graph"])
             connections = clean_json(data["connections"])
             plan = clean_json(data["plan"])
 
-            if graph is not None and plan is not None and connections is not None:
+            if graph and plan and connections:
                 newDesign = mongo.create_design(
                     {
                         "user_id": user_id,
@@ -55,43 +60,39 @@ async def design_pipeline(
                         "connections": connections,
                     }
                 )
+
                 mongo.update_user({"_id": user_id}, {"$inc": {"designsCreated": 1}})
-                # output["plan"] = plan
-                # output["connections"] = connections
-                # output["graph"] = graph
+
                 design_id = str(newDesign.inserted_id)
-                stringified_user_id = str(user_id)
+
                 output["designId"] = design_id
+
                 background_tasks.add_task(
                     save_design_qdrant,
                     plan,
                     connections,
                     session_id,
-                    stringified_user_id,
+                    str(user_id),
                     design_id,
                 )
-                logger.info(
-                    "agentPipeline.run completed, putting final response to queue."
-                )
+
                 await queue.put({"type": "final", "data": output})
         else:
-            logger.info("agentPipeline.run completed, putting final response to queue.")
             await queue.put({"type": "error", "data": data})
 
-        logger.debug("Putting end signal (None) to queue.")
         await queue.put(None)  # end signal
 
-    logger.info("Creating background task to run agent pipeline.")
-    asyncio.create_task(run())
+    async def event_generator():
+        asyncio.create_task(run())
 
-    while True:
-        item = await queue.get()
-        # logger.debug(f"Received item from queue: {item}")
-        if item is None:
-            logger.info("Received end signal from queue, breaking loop.")
-            break
-        stringified = json.dumps(item)
-        # logger.debug(f"Yielding stringified item: {stringified}")
-        yield stringified
+        while True:
+            item = await queue.get()
+            if item is None:
+                break
 
-        # Route to get design by id: /info/:id
+            yield json.dumps(item) + "<END>"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+    )

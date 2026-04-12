@@ -27,14 +27,11 @@ async def run_pipeline(request: Request, background_tasks: BackgroundTasks):
         )
     objectified_user_id = ObjectId(user_id)
 
-    return StreamingResponse(
-        design_pipeline(
-            objectified_user_id,
-            session_id,
-            query,
-            level,
-            agentPipeline=agentPipeline,
-            background_tasks=background_tasks,
-        ),
-        media_type="text/event-stream",
+    return await design_pipeline(
+        objectified_user_id,
+        session_id,
+        query,
+        level,
+        agentPipeline=agentPipeline,
+        background_tasks=background_tasks,
     )
