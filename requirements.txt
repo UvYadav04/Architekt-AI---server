@@ -4,7 +4,6 @@ langchain_openai
 langchain_groq
 fastapi
 uvicorn
-redis.asyncio
 pyJWT
 pymongo
 dotenv
