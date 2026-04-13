@@ -38,15 +38,11 @@ async def handleQuery(
 
     relatedContext = qdrant.search_design(query, user_id, design_id)
     relatedChat = qdrant.search_chat(query, user_id, design_id, session_id, limit=10)
-    print(relatedContext)
-    print(relatedChat)
     if relatedContext is not None:
         relatedContext = " ".join(relatedContext)
     if relatedChat is not None:
         relatedChat = " ".join(relatedChat)
 
-    print(relatedContext)
-    print(relatedChat)
 
     async def streamer_generator():
         messages = [

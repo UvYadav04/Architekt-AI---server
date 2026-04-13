@@ -42,9 +42,8 @@ NODE STRUCTURE (STRICT):
 
 {
     "id": "",
-    "data": { "label": "" },
+    "data": { "label": "","color:":"","shape": "circle" | "diamond" | "database" | "queue" | "cache" | "storage" | "rounded" },
     "position": { "x": 0, "y": 0 },
-    "style": {
     "background": "",
     "color": "",
     "border": "",
