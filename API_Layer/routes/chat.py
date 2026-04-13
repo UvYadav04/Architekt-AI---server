@@ -67,12 +67,11 @@ async def handleChat(request: Request, response: Response):
             )
 
         # Check chatCounts on designInfo
-        chat_allowed = int(os.environ.get("USER_CHAT_ALLOWED", 12))
         design_chat_counts = designInfo.get("chatCounts", 0)
-        if design_chat_counts >= chat_allowed:
+        if design_chat_counts >= 12:
             raise HTTPException(
                 status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-                detail=f"You can do only {chat_allowed} queries for each design in free tier.",
+                detail=f"You can do only 7 queries for each design in free tier.",
             )
 
         # Increment chatCounts by one

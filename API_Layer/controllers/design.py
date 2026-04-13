@@ -30,7 +30,7 @@ async def design_pipeline(
     if user_designs and len(user_designs) >= 2:
         raise HTTPException(
             status.HTTP_400_BAD_REQUEST,
-            detail="You can only create 5 designs in free tier.",
+            detail="You can only create 2 designs in free tier.",
         )
 
     async def stream_fn(msg):
