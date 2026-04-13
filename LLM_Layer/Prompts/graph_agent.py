@@ -96,7 +96,7 @@ LAYOUT RULES:
 
 - Maintain clear directional flow (top → bottom preferred)
 - No overlapping nodes
-- Keep spacing consistent
+- Keep a good spacing horizontally as well as vertically, do not make nodes overlap
 - Group related nodes naturally based on flows
 
 --------------------------------------
