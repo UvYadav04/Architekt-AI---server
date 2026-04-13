@@ -67,7 +67,6 @@ async def handleQuery(
             chat_response += token
 
             yield json.dumps({"type": "text", "content": token}) + "<END>"
-
             await asyncio.sleep(0)
 
         # 🔥 AFTER STREAM COMPLETES → SAVE
@@ -78,4 +77,13 @@ async def handleQuery(
             design_id=design_id,
         )
 
-    return StreamingResponse(streamer_generator(), media_type="text/plain")
+    return StreamingResponse(
+        streamer_generator(),
+        media_type="text/plain",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",  # 🔥 critical for nginx
+            "Transfer-Encoding": "chunked",
+        },
+    )
