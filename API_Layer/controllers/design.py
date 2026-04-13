@@ -88,9 +88,9 @@ async def design_pipeline(
 
         while True:
             item = await queue.get()
+            print("got item : ", item)
             if item is None:
                 break
-
             yield json.dumps(item) + "<END>"
 
     return StreamingResponse(
