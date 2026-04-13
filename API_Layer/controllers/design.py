@@ -91,7 +91,9 @@ async def design_pipeline(
             print("got item : ", item)
             if item is None:
                 break
-            yield json.dumps(item) + "<END>"
+            print("yielding:", item)
+            yield json.dumps(item) + "<END>\n\n"
+            print("yield finished for:", item)
 
     return StreamingResponse(
         event_generator(),
