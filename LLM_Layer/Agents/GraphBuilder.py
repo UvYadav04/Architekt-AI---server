@@ -23,7 +23,7 @@ async def graph_agent(state: dict):
     llm = LLM()
     stream = state.get("stream")
     if stream:
-        stream({"type": "phase", "data": "Building graph..."})
+        await stream({"type": "phase", "data": "Building graph..."})
 
     for i in range(MAX_RETRIES):
         logger.info(f"Attempt {i+1} of {MAX_RETRIES} for graph_agent.")
@@ -54,7 +54,7 @@ async def graph_agent(state: dict):
         logger.debug("Set state['graph'] to LLM output.")
 
         if stream:
-            stream({"type": "phase", "data": "Evaluating..."})
+            await stream({"type": "phase", "data": "Evaluating..."})
 
         evaluation = await graph_evaluator(clean, query)
         if isinstance(evaluation, dict) and evaluation.get("error"):
@@ -72,7 +72,7 @@ async def graph_agent(state: dict):
         if not parsed["is_valid"]:
             logger.warning("Evaluation failed, refining the output.")
             if stream:
-                stream({"type": "phase", "data": "Refining..."})
+                await stream({"type": "phase", "data": "Refining..."})
 
             feedback_message = HumanMessage(
                 content=f"""

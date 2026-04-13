@@ -22,7 +22,7 @@ async def planner_agent(state: dict):
 
     stream = state.get("stream")
     if stream is not None:
-        stream({"type": "phase", "data": "Planning..."})
+        await stream({"type": "phase", "data": "Planning..."})
 
     llm = LLM()
 

@@ -23,7 +23,7 @@ async def synthesizer_agent(state: dict):
     logger.info(f"Processing query: {query}")
 
     if stream:
-        stream({"type": "phase", "data": "Creating Connections..."})
+        await stream({"type": "phase", "data": "Creating Connections..."})
 
     messages = [
         SystemMessage(content=SYNTHESIZER_PROMPT),
@@ -57,7 +57,7 @@ async def synthesizer_agent(state: dict):
         state["connections"] = output_json
 
         if stream:
-            stream({"type": "phase", "data": "Evaluating..."})
+            await stream({"type": "phase", "data": "Evaluating..."})
 
         evaluation = await connection_evaluator(
             output_text, query, functional_requirements, non_functional_requirements
@@ -78,7 +78,7 @@ async def synthesizer_agent(state: dict):
         logger.warning("Evaluation failed. Refining output.")
 
         if stream:
-            stream({"type": "phase", "data": "Refining..."})
+            await stream({"type": "phase", "data": "Refining..."})
 
         feedback_message = HumanMessage(
             content=(

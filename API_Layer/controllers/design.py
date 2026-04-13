@@ -33,9 +33,10 @@ async def design_pipeline(
             detail="You can only create 5 designs in free tier.",
         )
 
-    def stream_fn(msg):
+    async def stream_fn(msg):
         logger.debug(f"Streaming message to queue: {msg}")
-        queue.put_nowait(msg)
+        await queue.put(msg)
+        await asyncio.sleep(0)
 
     async def run():
         logger.info(f"Starting agentPipeline.run with query='{query}', level='{level}'")
