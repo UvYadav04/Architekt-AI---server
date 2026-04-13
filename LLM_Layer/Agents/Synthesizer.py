@@ -40,8 +40,6 @@ async def synthesizer_agent(state: dict):
             return result
         output_text = result.content
 
-        print("synthesier output : ", output_text)
-
         try:
             output_json = clean_json(output_text)
         except Exception:

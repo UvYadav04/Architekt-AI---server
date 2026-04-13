@@ -225,8 +225,6 @@ class QdrantDB:
     @safeExecution
     def search_design(self, query: str, user_id: str, design_id: str, limit: int = 5):
         query_vector = self._embed([query])[0]
-        print(" in search design user_Id: ", user_id)
-        print("design_Id: ", design_id)
         result = self.client.query_points(
             collection_name=self.DESIGN_COLLECTION,
             query=query_vector,

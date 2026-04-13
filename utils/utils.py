@@ -2,7 +2,6 @@ import json
 
 
 def clean_json(text):
-    print(f"In clean type of text : {type(text)}")
     if isinstance(text, dict):
         return text  # Already a dictionary, return as is
     if isinstance(text, str):

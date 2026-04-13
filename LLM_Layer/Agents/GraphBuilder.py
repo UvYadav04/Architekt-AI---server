@@ -35,8 +35,6 @@ async def graph_agent(state: dict):
         output_text = result.content.strip()  # Clean spaces
         clean = clean_json(output_text)
 
-        print("output from graph builder : ", clean)
-
         # Check for presence of 'nodes' and 'edges'
         if (
             not isinstance(clean, dict)
@@ -49,8 +47,6 @@ async def graph_agent(state: dict):
             return {"error": "Invalid graph output: 'nodes' and 'edges' required."}
 
         state["graph"] = clean
-        logger.info(f"Graph Builder output: {clean}")
-        logger.info(f"Graph Builder output type: {type(clean)}")
         logger.debug("Set state['graph'] to LLM output.")
 
         if stream:
@@ -62,7 +58,6 @@ async def graph_agent(state: dict):
         logger.info(f"Graph Evaluation result: {evaluation}")
 
         parsed = evaluation  # already parsed in evluator
-        logger.debug(f"Cleaned evaluation: {parsed}")
 
         if "is_valid" not in parsed:
             logger.warning(

@@ -35,23 +35,19 @@ async def connection_evaluator(
     llm = LLM()
     logger.info("Sending messages to LLM for connection evaluation.")
     response = await llm.generate(messages)
-    print("response in connection elvaluator : ", response)
     if isinstance(response, dict) and response.get("error"):
         return response
     logger.info("Received response from LLM.")
-    logger.debug(f"LLM raw response: {response.content}")
     try:
         cleaned = clean_json(response.content)
     except Exception as e:
         logger.error(f"Error cleaning LLM response: {str(e)}")
         return {"error": "invalid response from graph evaluator"}
-    logger.debug(f"LLM cleaned response: {cleaned}")
     return cleaned
 
 
 def is_fully_connected(components, connections):
     logger.info("Checking if design is fully connected.")
-    logger.debug(f"Components: {components}, Connections: {connections}")
     graph = {c: [] for c in components}
 
     for a, b in connections:
