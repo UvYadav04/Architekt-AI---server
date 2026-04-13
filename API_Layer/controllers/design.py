@@ -75,8 +75,8 @@ async def design_pipeline(
                     str(user_id),
                     design_id,
                 )
-
                 await queue.put({"type": "final", "data": output})
+
         else:
             await queue.put({"type": "error", "data": data})
 

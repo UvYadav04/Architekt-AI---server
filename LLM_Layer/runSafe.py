@@ -39,27 +39,68 @@ def reset_retry(state, agent_name, max_retries=2):
 
 async def runAgentSafe(agentFn, state):
     try:
-        logger.info(
-            f"Running agent function: {getattr(agentFn, '__name__', str(agentFn))}"
-        )
+        agent_name = getattr(agentFn, "__name__", str(agentFn))
+        logger.info(f"Running agent function: {agent_name}")
+
         result = await agentFn(state)
-        print("result : ", result)
-        if result is None or (isinstance(result, dict) and result.get("error")):
-            logger.error("Empty or invalid response encountered from agent.")
-            raise ValueError("Empty or invalid response")
+        print(f"agent : {agent_name }")
+        print(f"result : {result}")
+        logger.debug(f"{agent_name} result: {result}")
+
+        # ✅ Handle None safely
+        if result is None:
+            logger.error("Agent returned None")
+            return {
+                "success": False,
+                "error": {
+                    "type": "NO_RESPONSE",
+                    "message": "Agent returned None",
+                    "retryable": True,
+                    "agent": agent_name,
+                },
+            }
+
+        # ✅ Handle non-dict safely (LLM hallucination etc.)
+        if not isinstance(result, dict):
+            logger.error(f"Non-dict response: {result}")
+            return {
+                "success": False,
+                "error": {
+                    "type": "NON_JSON_RESPONSE",
+                    "message": "Agent returned non-dict response",
+                    "retryable": True,
+                    "agent": agent_name,
+                },
+            }
+
+        # ✅ DO NOT blindly fail on `error` key
+        # Only fail if it's clearly a failure structure
+        if result.get("error") and not result.get("data"):
+            logger.error(f"Agent returned error object: {result}")
+            return {
+                "success": False,
+                "error": {
+                    "type": "AGENT_ERROR",
+                    "message": result.get("error"),
+                    "retryable": True,  # 👈 important
+                    "agent": agent_name,
+                },
+            }
+
+        # ✅ Otherwise treat as success (even if imperfect)
         logger.info("Agent ran successfully.")
         return {"success": True, "data": result}
 
     except Exception as err:
         logger.error(f"Error in runAgentSafe: {err}", exc_info=True)
-        error_info = classify_error(err)
 
+        # ✅ DO NOT over-classify — keep it safe + retryable
         return {
             "success": False,
             "error": {
-                "type": error_info["type"],
+                "type": "UNEXPECTED_ERROR",
                 "message": str(err),
-                "retryable": error_info["retryable"],
+                "retryable": True,  # 👈 important: don't kill pipeline
                 "agent": getattr(agentFn, "__name__", str(agentFn)),
             },
         }
