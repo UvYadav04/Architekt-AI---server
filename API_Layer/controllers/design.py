@@ -93,9 +93,16 @@ async def design_pipeline(
                 break
             print("yielding:", item)
             yield json.dumps(item) + "<END>\n\n"
+            await asyncio.sleep(0.01)
             print("yield finished for:", item)
 
     return StreamingResponse(
         event_generator(),
         media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+            "Transfer-Encoding": "chunked",
+        },
     )
