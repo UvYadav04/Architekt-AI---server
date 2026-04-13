@@ -34,37 +34,34 @@ CORE RULES:
 2. Only use flows to create edges.
 3. Do NOT invent new connections.
 4. Do NOT skip any component.
-5. Do NOT hardcode or infer strict types.
+5. Do NOT infer complex types — only assign simple shape based on name.
 
 --------------------------------------
 NODE STRUCTURE (STRICT):
 
-
 {
-    "id": "",
-    "data": { "label": "","color:":"","shape": "circle" | "diamond" | "database" | "queue" | "cache" | "storage" | "rounded" },
-    "position": { "x": 0, "y": 0 },
-    "background": "",
+  "id": "",
+  "type": "system",
+  "data": {
+    "label": "",
     "color": "",
-    "border": "",
-    "borderRadius": "8px",
-    "padding": "6px"
-    }
+    "shape": "circle" | "diamond" | "database" | "queue" | "cache" | "storage" | "rounded"
+  },
+  "position": { "x": 0, "y": 0 }
 }
-
 
 --------------------------------------
 EDGE STRUCTURE (STRICT):
 
 {
-    "id": "",
-    "source": "",
-    "target": "",
-    "animated":true,
-    "style": {
+  "id": "",
+  "source": "",
+  "target": "",
+  "animated": true,
+  "style": {
     "stroke": "",
     "strokeWidth": 2
-    }
+  }
 }
 
 --------------------------------------
@@ -79,25 +76,44 @@ Example:
 "User Service" → "user-service"
 
 --------------------------------------
+SHAPE RULES:
+
+- user/client → circle
+- gateway/load balancer → diamond
+- db/database → database
+- cache/redis → cache
+- queue/kafka → queue
+- storage/s3 → storage
+- default → rounded
+
+--------------------------------------
+COLOR RULES:
+
+- circle → #2563eb
+- diamond → #9333ea
+- rounded → #22c55e
+- cache → #f59e0b
+- queue → #f97316
+- database → #ef4444
+- storage → #38bdf8
+
+--------------------------------------
 REPLICATION RULE (IMPORTANT):
 
-If a component represents a scalable unit (like servers, workers, queues, etc.), 
-you MAY create multiple replicas ONLY when it improves graph clarity.
+If a component represents a scalable unit (servers, workers, queues):
 
-Rules:
-- Max 3 replicas per component
+- Max 3 replicas
 - Use suffix: "-1", "-2", "-3"
-  Example: "service" → "service-1", "service-2"
-- Distribute incoming/outgoing edges logically across replicas
-- Do NOT replicate everything — only when meaningful
+- Distribute edges logically
+- Do NOT replicate unnecessarily
 
 --------------------------------------
 LAYOUT RULES:
 
-- Maintain clear directional flow (top → bottom preferred)
+- Top → bottom flow
 - No overlapping nodes
-- Keep a good spacing horizontally as well as vertically, do not make nodes overlap
-- Group related nodes naturally based on flows
+- Vertical spacing ≈ 120
+- Horizontal spacing: center ≈ 250, left ≈ 100, right ≈ 400
 
 --------------------------------------
 GRAPH VALIDATION:
@@ -112,9 +128,10 @@ GRAPH VALIDATION:
 FINAL CHECK:
 
 - JSON valid?
-- Nodes match components (plus replicas if used)?
-- Edges strictly follow flows?
-- Clean structure, no noise?
+- Nodes match components?
+- Edges follow flows?
+- shape inside data?
+- color valid hex?
 
 If anything is wrong → fix before returning.
 
