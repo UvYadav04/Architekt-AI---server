@@ -36,6 +36,8 @@ async def graph_agent(state: dict):
         output_text = result.content.strip()  # Clean spaces
         clean = clean_json(output_text)
 
+        print("Clean builder output : ", clean)
+
         # Check for presence of 'nodes' and 'edges'
         if (
             not isinstance(clean, dict)
