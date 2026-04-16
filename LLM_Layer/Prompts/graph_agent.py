@@ -59,7 +59,7 @@ EDGE STRUCTURE (STRICT):
   "target": "",
   "animated": true,
   "style": {
-    "stroke": "",
+    "stroke": #6366f1" | "#22d3ee" | "#16a34a" | "#ef4444" | "#f97316" | "#eab308" | "#7c3aed" | "#38bdf8" | "#f59e0b" | "#c026d3",
     "strokeWidth": 2
   }
 }
