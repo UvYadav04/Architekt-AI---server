@@ -31,7 +31,7 @@ class LLM:
         logger.debug("Instantiating ChatGroq model.")
         self.model = ChatGroq(
             api_key=GROQ_API_KEY,
-            model="openai/gpt-oss-120b",
+            model="llama-3.3-70b-versatile",
             temperature=0,
         )
         logger.debug("Binding tools to the model.")
