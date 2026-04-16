@@ -48,6 +48,7 @@ async def planner_agent(state: dict):
 
         # JSON Parse and Validation
         parsed = clean_json(response.content)
+        print("Planner Response : ",parsed)
 
         logger.info("LLM returned plan.")
 

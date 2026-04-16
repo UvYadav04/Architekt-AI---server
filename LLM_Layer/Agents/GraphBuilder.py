@@ -29,6 +29,7 @@ async def graph_agent(state: dict):
         logger.info(f"Attempt {i+1} of {MAX_RETRIES} for graph_agent.")
 
         result = await llm.generate(messages)
+        print("Graph Builder Respones : ", result)
         if isinstance(result, dict) and result.get("error"):
             return result
 

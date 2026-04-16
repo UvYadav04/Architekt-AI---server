@@ -35,6 +35,8 @@ async def connection_evaluator(
     llm = LLM()
     logger.info("Sending messages to LLM for connection evaluation.")
     response = await llm.generate(messages)
+    print("Evaluator Synthesizer Response : ", response)
+
     if isinstance(response, dict) and response.get("error"):
         return response
     logger.info("Received response from LLM.")

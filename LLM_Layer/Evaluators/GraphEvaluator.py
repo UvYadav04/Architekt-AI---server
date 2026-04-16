@@ -26,6 +26,8 @@ async def graph_evaluator(design, query):
     llm = LLM()
     logger.debug("Sending messages to LLM for evaluation.")
     response = await llm.generate(messages)
+    print("Evaluator Graph Response : ", response)
+
     if isinstance(response, dict) and response.get("error"):
         return response
     logger.info("Received response from LLM.")
