@@ -31,7 +31,7 @@ class LLM:
         logger.debug("Instantiating ChatGroq model.")
         self.model = ChatGroq(
             api_key=GROQ_API_KEY,
-            model="moonshotai/kimi-k2-instruct",
+            model="openai/gpt-oss-120b",
             temperature=0,
         )
         logger.debug("Binding tools to the model.")
