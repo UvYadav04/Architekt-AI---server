@@ -35,6 +35,13 @@ class MongoDB:
     def get_user(self, query: dict):
         return self.users.find_one(query)
 
+    def is_admin(self, query: dict):
+        user_info = self.users.find_one(query)
+        if user_info is None:
+            return False
+        else:
+            return user_info.get("email") == "dineshnirban01@gmail.com"
+
     def update_user(self, query: dict, update: dict):
         return self.users.update_one(query, update)
 

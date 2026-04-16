@@ -36,10 +36,11 @@ async def synthesizer_agent(state: dict):
         logger.info(f"Attempt {i+1} of {MAX_RETRIES} for synthesizer_agent.")
 
         result = await llm.generate(messages)
-        print("Synthesizer response : ", result)
         if isinstance(result, dict) and result.get("error"):
             return result
         output_text = result.content
+        print("Synthesizer response : ", output_text)
+        print("Synthesizer response : ", type(output_text))
 
         try:
             output_json = clean_json(output_text)

@@ -10,8 +10,26 @@ INPUT:
 {
   "design": "string (system description)",
   "graph": {
-    "nodes": [{ "id": "string", "data": { "label": "string" } }],
-    "edges": [{ "source": "string", "target": "string" }]
+    "nodes": [{
+  "id": "",
+  "type": "system",
+  "data": {
+    "label": "",
+    "color": "",
+    "shape": "circle" | "diamond" | "database" | "queue" | "cache" | "storage" | "rounded"
+  },
+  "position": { "x": 0, "y": 0 }
+}],
+    "edges": [{
+  "id": "",
+  "source": "",
+  "target": "",
+  "animated": true,
+  "style": {
+    "stroke": #6366f1" | "#22d3ee" | "#16a34a" | "#ef4444" | "#f97316" | "#eab308" | "#7c3aed" | "#38bdf8" | "#f59e0b" | "#c026d3",
+    "strokeWidth": 2
+  }
+}]
   }
 }
 
@@ -132,4 +150,8 @@ If anything is incorrect → fix before returning.
 --------------------------------------
 FINAL RULE:
 
-Return ONLY valid JSON."""
+Return ONLY valid JSON.
+Do NOT stop mid-output.
+Do NOT call tools.
+Ensure the JSON is COMPLETE and CLOSED.
+"""

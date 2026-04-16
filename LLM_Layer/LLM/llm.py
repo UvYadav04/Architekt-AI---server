@@ -4,6 +4,7 @@ from langchain_groq import ChatGroq
 import os
 from ..Tools.get_components import get_components
 from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
 
 load_dotenv()
 
@@ -29,21 +30,29 @@ class LLM:
         logger.info("Initializing LLM instance...")
         GROQ_API_KEY = os.environ["GROQ_API_KEY"]
         logger.debug("Instantiating ChatGroq model.")
-        self.model = ChatGroq(
+
+        self.planner_model = ChatGroq(
+            api_key=GROQ_API_KEY, model="llama-3.3-70b-versatile", temperature=0
+        ).bind_tools([get_components])
+
+        self.executor_model = ChatGroq(
             api_key=GROQ_API_KEY,
             model="llama-3.3-70b-versatile",
             temperature=0,
+            model_kwargs={
+                "tool_choice": "none",
+            },  # 🔥 critical
         )
         logger.debug("Binding tools to the model.")
-        self.model = self.model.bind_tools([get_components])
         self._initialized = True
         logger.info("LLM instance initialized.")
 
-    async def generate(self, messages):
+    async def generate(self, messages, planner=False):
         logger.info("LLM.generate called.")
         # logger.debug(f"Messages to model: {messages}")
+        model = self.planner_model if planner else self.executor_model
         try:
-            result = await self.model.ainvoke(messages)
+            result = await model.ainvoke(messages)
             logger.info("LLM.generate received result from model.")
             # logger.debug(f"Model result: {result}")
             return result
@@ -56,7 +65,7 @@ class LLM:
         logger.info("LLM.stream called.")
 
         try:
-            async for chunk in self.model.astream(messages):
+            async for chunk in self.executor_model.astream(messages):
                 # Each chunk is usually an AIMessageChunk
                 content = getattr(chunk, "content", None)
 

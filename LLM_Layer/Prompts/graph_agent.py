@@ -104,6 +104,7 @@ If a component represents a scalable unit (servers, workers, queues):
 
 - Max 3 replicas
 - Use suffix: "-1", "-2", "-3"
+- Use these replica names as label value
 - Distribute edges logically
 - Do NOT replicate unnecessarily
 
@@ -122,6 +123,7 @@ GRAPH VALIDATION:
 - No duplicate edges
 - No self-loops
 - Every node must be connected
+- Make the servers, load balancers, api gateway and such important components connected valid
 - Max 50 nodes total
 
 --------------------------------------
@@ -140,5 +142,8 @@ If anything is wrong → fix before returning.
 FINAL RULE:
 
 Return ONLY valid JSON.
+Do NOT stop mid-output.
+Do NOT call tools.
+Ensure the JSON is COMPLETE and CLOSED.
 Do not include explanations, reasoning, or extra text.
 """

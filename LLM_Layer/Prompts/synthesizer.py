@@ -77,4 +77,7 @@ If output is invalid → FIX before returning.
 FINAL RULE:
 
 Return ONLY valid JSON.
+Do NOT stop mid-output.
+Do NOT call tools.
+Ensure the JSON is COMPLETE and CLOSED.
 """

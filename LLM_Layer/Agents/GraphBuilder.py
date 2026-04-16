@@ -15,7 +15,7 @@ async def graph_agent(state: dict):
     connections = state["connections"]
     query = state["query"]
     logger.debug(f"Received connections: {connections}")
-    MAX_RETRIES = 1
+    MAX_RETRIES = 2
     messages = [
         SystemMessage(content=GRAPH_AGENT_PROMPT),
         HumanMessage(content=json.dumps(connections)),

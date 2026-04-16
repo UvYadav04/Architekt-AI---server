@@ -28,7 +28,7 @@ async def planner_agent(state: dict):
 
     while True:
         logger.debug("Sending messages to LLM for planning")
-        response = await llm.generate(messages)
+        response = await llm.generate(messages,True)
         if isinstance(response, dict) and response.get("error"):
             return response
 

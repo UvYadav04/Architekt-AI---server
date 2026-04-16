@@ -26,8 +26,9 @@ async def design_pipeline(
     mongo = MongoDB()
 
     user_designs = mongo.get_all_designs({"user_id": user_id})
+    is_admin = mongo.is_admin({"_id": user_id})
 
-    if user_designs and len(user_designs) >= 2:
+    if not is_admin and user_designs and len(user_designs) >= 2:
         raise HTTPException(
             status.HTTP_400_BAD_REQUEST,
             detail="You can only create 2 designs in free tier.",
