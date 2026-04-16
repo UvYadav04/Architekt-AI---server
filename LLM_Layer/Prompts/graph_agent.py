@@ -131,6 +131,7 @@ FINAL CHECK:
 - Nodes match components?
 - Edges follow flows?
 - shape inside data?
+- any edges or nodes not broken?
 - color valid hex?
 
 If anything is wrong → fix before returning.
@@ -139,4 +140,5 @@ If anything is wrong → fix before returning.
 FINAL RULE:
 
 Return ONLY valid JSON.
+Do not include explanations, reasoning, or extra text.
 """
